@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, send_file
 import instaloader
 
 app = Flask(__name__)
@@ -23,9 +23,14 @@ def index():
     if request.method == 'POST':
         url = request.form['url']
         save_path = 'path_to_save_video.mp4'  # Set your desired save path here
+
+        # Download the video and save it to the server
         message = download_instagram_video(url, save_path)
-        return jsonify(message=message)  # Return JSON response
+
+        # Send the video file as a response to the user
+        return send_file(save_path, as_attachment=True, download_name='downloaded_video.mp4')
+
     return render_template('index.html', message='')
 
 if __name__ == '__main__':
-     app.run(host='0.0.0.0', port=80, debug=True)
+    app.run(host='0.0.0.0', port=80, debug=True)
